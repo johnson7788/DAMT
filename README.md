@@ -1,5 +1,5 @@
 # DAMT
-A new method for semi-supervised domain adaptation of Neural Machine Translation (NMT)
+神经机器翻译（NMT）的半监督领域适应性的一种新方法
 
 This is the source code for the paper: [Jin, D., Jin, Z., Zhou, J.T., & Szolovits, P. (2020). Unsupervised Domain Adaptation for Neural Machine Translation with Iterative Back Translation. ArXiv, abs/2001.08140.](https://arxiv.org/abs/2001.08140). If you use the code, please cite the paper:
 
@@ -14,11 +14,11 @@ This is the source code for the paper: [Jin, D., Jin, Z., Zhou, J.T., & Szolovit
 ```
 
 ## Prerequisites:
-Run the following command to install the prerequisite packages:
+运行以下命令以安装先决条件包：
 ```
 pip install -r requirements.txt
 ```
-You should also install Moses tokenizer and fastBPE tool in the folder of "tools" by running the following commands:
+你还应该通过运行以下命令在 "工具 "文件夹中安装Moses tokenizer和fastBPE工具。
 ```
 cd tools
 git clone https://github.com/moses-smt/mosesdecoder
@@ -29,41 +29,113 @@ cd ../..
 ```
 
 ## Data:
-Please download the data from the [Google Drive](https://drive.google.com/file/d/1aQOXfcGpPbQemG4mQQuiy6ZrCRn6WiDj/view?usp=sharing) and unzip it to the main directory of this repository. The data downloaded include the domains of MED (EMEA), IT, LAW (ACQUIS), and TED for DE-EN language pair and MED, LAW, and TED for EN-RO language pair. WMT14 DE-EN data can be downloaded [here](https://nlp.stanford.edu/projects/nmt/) and WMT16 EN-RO data is downloaded from [here](https://www.statmt.org/wmt16/translation-task.html).
+请下载数据从 [Google Drive](https://drive.google.com/file/d/1aQOXfcGpPbQemG4mQQuiy6ZrCRn6WiDj/view?usp=sharing) 
+将其解压缩到此repository的主目录 .下载的数据包括DE-EN语言对的MED（EMEA）、IT、LAW（ACQUIS）和TED领域以及EN-RO语言对的MED、LAW和TED领域。 
+WMT14 DE-EN data can be downloaded [here](https://nlp.stanford.edu/projects/nmt/) and WMT16 EN-RO data is downloaded from [here](https://www.statmt.org/wmt16/translation-task.html).
+
+下载后解压完成的数据集目录
+```buildoutcfg
+data
+├── de-en
+│   ├── acquis
+│   │   ├── dev.de
+│   │   ├── dev.en
+│   │   ├── test.de
+│   │   ├── test.en
+│   │   ├── train.de
+│   │   ├── train.de.mono
+│   │   ├── train.en
+│   │   └── train.en.mono
+│   ├── emea
+│   │   ├── dev.de
+│   │   ├── dev.en
+│   │   ├── test.de
+│   │   ├── test.en
+│   │   ├── train.de
+│   │   ├── train.de.mono
+│   │   ├── train.en
+│   │   └── train.en.mono
+│   ├── it
+│   │   ├── dev.de
+│   │   ├── dev.en
+│   │   ├── test.de
+│   │   ├── test.en
+│   │   ├── train.de
+│   │   ├── train.de.mono
+│   │   ├── train.en
+│   │   └── train.en.mono
+│   └── ted
+│       ├── dev.de
+│       ├── dev.en
+│       ├── test.de
+│       ├── test.en
+│       ├── train.de
+│       ├── train.de.mono
+│       ├── train.en
+│       └── train.en.mono
+└── en-ro
+    ├── acquis
+    │   ├── dev.en
+    │   ├── dev.ro
+    │   ├── test.en
+    │   ├── test.ro
+    │   ├── train.en
+    │   ├── train.en.mono
+    │   ├── train.ro
+    │   └── train.ro.mono
+    ├── emea
+    │   ├── dev.en
+    │   ├── dev.ro
+    │   ├── test.en
+    │   ├── test.ro
+    │   ├── train.en
+    │   ├── train.en.mono
+    │   ├── train.ro
+    │   └── train.ro.mono
+    └── ted
+        ├── dev.en
+        ├── dev.ro
+        ├── test.en
+        ├── test.ro
+        ├── train.en
+        ├── train.en.mono
+        ├── train.ro
+        └── train.ro.mono
+```
 
 ## How to use
-1. First we need to download the pretrained model parameter files from the [XLM repository](https://github.com/facebookresearch/XLM#pretrained-xlmmlm-models).
+1. 首先，我们需要下载预训练的模型参数文件，从 [XLM repository](https://github.com/facebookresearch/XLM#pretrained-xlmmlm-models).
 
-2. Then we need to process the data. Suppose we want to train the NMT model from German (de) to English (en), and the source domain is Law (dataset name is acquis) and the target domain is IT, then run the following command:
+2. 然后我们需要处理这些数据。假设我们要训练从德语（de）到英语（en）的NMT模型，源域是法律（数据集名称是acquis），目标域是IT，那么运行以下命令。
 ```
 ./get-data-nmt-local.sh --src de --tgt en --data_name it --data_path ./data/de-en/it --reload_codes PATH_TO_PRETRAINED_MODEL_CODES --reload_vocab PATH_TO_PRETRAINED_MODEL_VOCAB
 ./get-data-nmt-local.sh --src de --tgt en --data_name acquis --data_path ./data/de-en/acquis --reload_codes PATH_TO_PRETRAINED_MODEL_CODES --reload_vocab PATH_TO_PRETRAINED_MODEL_VOCAB
 ```
 
-3. After data processing, to reproduce the "IBT" setting as mentioned in the paper, run the following command:
+3. 在数据处理之后，为了重现论文中提到的 "IBT "设置，运行以下命令。
 ```
 ./train_IBT.sh --src de --tgt en --data_name it --pretrained_model_dir DIR_TO_PRETRAINED_MODEL
 ```
 
-4. To reproduce the "IBT+SRC" setting, Recall that we want to adapt from the Law domain to IT domain, where the source domain is Law (dataset name is acquis) and the target domain is IT, then run the following command:
+4. 为了重现 "IBT+SRC "的设置，回顾一下，我们要从法律域适应IT域，其中源域是法律（数据集名称是acquis），目标域是IT，然后运行以下命令。
 ```
 ./train_IBT_plus_SRC.sh --src de --tgt en --src_data_name acquis --tgt_data_name it --pretrained_model_dir DIR_TO_PRETRAINED_MODEL
 ```
 
-5. In order to reproduce the "IBT+Back" setting, we need to go through several steps. 
+5. 为了重现 "IBT+back "的设置，我们需要经过几步。
 
-* First of all, we need to train a NMT model to translate from en to de using the source domain data (acquis) by running the following command:
+* 首先，我们需要训练一个NMT模型，通过运行以下命令，使用源域数据（acquis）将en翻译成de。
 ```
 ./train_sup.sh --src en --tgt de --data_name acquis --pretrained_model_dir DIR_TO_PRETRAINED_MODEL
 ```
 
-   * After training this model, we get the translation results by using thie model to translate the English sentences in the target domain (it) to German, which are used as the back-translated data:
+* 训练完这个模型后，我们通过使用这个模型将目标域（it）中的英语句子翻译成德语来获得翻译结果，这些句子被作为逆向翻译数据。
 ```
 ./translate_exe.sh --src en --tgt de --data_name it --model_name acquis --model_dir DIR_TO_TRAINED_MODEL
 ./get-data-back-translate.sh --src en --tgt de --data_name it --model_name acquis
 ```
 
-   * When the back-translated data is ready, we can finally run this command:
+* 当逆向翻译的数据准备好后，我们终于可以运行这个命令了。
 ```
 ./train_IBT_plus_BACK.sh --src de --tgt en --src_data_name acquis --tgt_data_name it --pretrained_model_dir DIR_TO_PRETRAINED_MODEL
 ```
