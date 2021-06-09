@@ -32,3 +32,6 @@ hs_err_pid*
 *.lock
 .git
 data
+model
+tools/fastBPE/
+tools/mosesdecoder/
