@@ -109,6 +109,8 @@ data
 English-German 	MLM 	Model 	BPE codes 	Vocabulary
 English-Romanian 	MLM 	Model 	BPE codes 	Vocabulary
 
+#如果要用其它语言翻译模型，更改XLM为XLM-R的模型即可
+
 eg:
 wget https://dl.fbaipublicfiles.com/XLM/mlm_ende_1024.pth
 wget https://dl.fbaipublicfiles.com/XLM/codes_ende
